@@ -13,21 +13,21 @@ class Bird:
         self.jumpstrength = -10
         # initisalising atributes, all of the above
         
-        def jump (self):
-            self.velocity = self.jumpstrength
+    def jump (self):
+        self.velocity = self.jumpstrength
             
-        def update(self):
-            self.velocity += self.gravity #incrementing gravity to allow bird to fall down
-            self.y += self.velocity #showing that the velocity is bringing the ball down
+    def update(self):
+        self.velocity += self.gravity #incrementing gravity to allow bird to fall down
+        self.y += self.velocity #showing that the velocity is bringing the ball down
 
-        def draw(self,surface):
-            pygame.draw.circle(surface,self.yellow,(self.x,int(self.y)),self.radius)# we are not putting x as an integer because x is already an integer
+    def draw(self,surface,yellow):
+        pygame.draw.circle(surface,yellow,(self.x,int(self.y)),self.radius)# we are not putting x as an integer because x is already an integer
             #initially both x and y are integers however y is affected by the velocity which inturn is affected by gravity
             #gravity is decreasing by 0.5 which which affects y by turning it into a float number instead of an integer
             #we must replace y as an interger since it is a co-ordinate and co-ordinates cannot be floats
 
-        def getrect(self,surface):
-            return pygame.Rect(surface,self.x-self.radius,self.y-self.radius,self.radius*2,self.radius*2)#a rectangle for the ball (x,y,width,height)
+    def get_rect(self):
+        return pygame.Rect(self.x-self.radius,self.y-self.radius,self.radius*2,self.radius*2)#a rectangle for the ball (x,y,width,height)
 #when we want to draw a rectangle OBJECT its pygame.Rect with a capital r instead of drawing a rectangle using pygame.draw.rect
          
     
@@ -46,9 +46,9 @@ class Pipe:
         self.top.x = self.top.x - self.pipespeed  
         self.bottom.x = self.bottom.x - self.pipespeed
 
-    def draw(self,surface):
-        pygame.draw.rect(surface,self.green,self.top)
-        pygame.draw.rect(surface,self.green,self.bottom)
+    def draw(self,surface,green):
+        pygame.draw.rect(surface,green,self.top)
+        pygame.draw.rect(surface,green,self.bottom)
 
     def collide(self,bird):
         return(bird.get_rect().colliderect(self.top)or bird.get_rect().colliderect(self.bottom))
@@ -108,9 +108,9 @@ class game:
     def draw(self):
         #pipes,bg, bird, score
         self.screen.fill(self.bgblue)
-        self.bird.draw(self.screen)
+        self.bird.draw(self.screen,self.yellow)
         for pipe in self.pipes:
-            pipe.draw(self.screen)
+            pipe.draw(self.screen,self.green)
         text = self.font.render("Score"+ str(self.score), True, self.black)#error, forgot last two parameters
         self.screen.blit(text,(25,25))
         pygame.display.update()
@@ -118,13 +118,13 @@ class game:
     def game_over(self):
         self.screen.fill(self.black)
         over = self.font.render("GAME OVER - FINAL SCORE" +str(self.score),True, self.red)
-        self.screen.blit(over,(300,400))
+        self.screen.blit(over,(100,400))
         pygame.display.update()
         pygame.time.wait(3000)#pausing time, note forgotten, time is wirtten in milliseconds therefore 3000 = 3 sec
 
     def run(self):
         while self.running:
-            self.clock.tick()#limiting the frame to 60 t/sec
+            self.clock.tick(20)#limiting the frame to 20 t/sec
             self.handling_events()
             self.update()
             self.draw()
